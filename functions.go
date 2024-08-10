@@ -47,3 +47,32 @@ func Fibonacci(n int) int {
 	}
 	return f[n]
 }
+
+// The reciver b of the Business struc pointer has a method named Init
+func (b *Business) Init() {
+
+	//Initialize struc pointers of each ferret, we do not want to make a copy
+	wallace := &Ferret{"Wallace", 1}
+	gromit := &Ferret{"Gromit", 2}
+	eve := &Ferret{"Eve", 3}
+
+	//return a slice of pointers
+	b.Data = []*Ferret{wallace, gromit, eve}
+}
+
+// the reciever b of the Business struc has a method named CollectionChannel()
+// which will return pointers of the channel of type Ferret struc
+func (b *Business) CollectionChannel() chan *Ferret {
+
+	//create a chanel of type Ferret struc with the length of the passed reciver Data
+	//research:
+	//when I remove the length I get an error about all channels being asleep
+	dataChannel := make(chan *Ferret, len(b.Data))
+
+	for _, ferret := range b.Data {
+		dataChannel <- ferret
+	}
+
+	close(dataChannel)
+	return dataChannel
+}
