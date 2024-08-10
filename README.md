@@ -14,10 +14,12 @@ Structure:
 ```
 ------workout
        |---functions.go
+       |---api.go
        |---main.go
 ```
 
-functions.go -- place holder for all practice functions 
+functions.go -- place holder for all practice functions/methods
+api.go --place holder for data structures 
 
 Go version being used: 
 
