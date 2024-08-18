@@ -1,6 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+	"io"
+)
 
 func RemoveElement(s []string, e string) []string {
 
@@ -64,9 +68,9 @@ func (b *Business) Init() {
 // which will return pointers of the channel of type Ferret struc
 func (b *Business) CollectionChannel() chan *Ferret {
 
-	//create a chanel of type Ferret struc with the length of the passed reciver Data
-	//research:
-	//when I remove the length I get an error about all channels being asleep
+	//create a chanel of type Ferret struc with the length of the passed receiver Data
+	//this ia a buffered channel, so it does not need a channel receiver
+	//and the buffer is set to the length of the returned slice
 	dataChannel := make(chan *Ferret, len(b.Data))
 
 	for _, ferret := range b.Data {
@@ -75,4 +79,20 @@ func (b *Business) CollectionChannel() chan *Ferret {
 
 	close(dataChannel)
 	return dataChannel
+}
+
+// Implement a WriteJSON method that takes an io.Writer as the parameter.
+// It marshals the Ferret struct to JSON, and if the marshal worked
+// successfully, then calls the relevant io.Writer's Write() method.
+
+// WriteJSON Note the method is declared with a pointer receiver, which will automatically dereference,
+// the pointer when using dot operator on it to access a field else call a method
+func (c *Business) WriteJSON(w io.Writer) error {
+	js, err := json.Marshal(c)
+	if err != nil {
+		return err
+	}
+
+	_, err = w.Write(js)
+	return err
 }

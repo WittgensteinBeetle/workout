@@ -1,6 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"bytes"
+	"fmt"
+	"log"
+	"os"
+)
 
 func main() {
 	var fruit = []string{"dragonfruit", "pear", "watermelon"}
@@ -18,4 +23,29 @@ func main() {
 		fmt.Println("Channel values for Ferret Name,Age:", ferret.Name, ferret.Age)
 
 	}
+
+	// We can then call the WriteJSON method using a buffer - in memory - not ideal for prod.
+	//though see how this satifies the interface
+	var buf bytes.Buffer
+	err := f.WriteJSON(&buf)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(&buf)
+
+	// Or using a file. Same principle to showcase interface
+	// to implement an interface you have to satisfy it by calling all
+	// the methods defined in said interface.
+	file, err := os.Create("/tmp/ferrets.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	err = f.WriteJSON(file)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 }
